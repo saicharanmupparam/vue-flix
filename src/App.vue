@@ -1,19 +1,52 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { ref, onMounted } from 'vue'
+import { supabase } from './lib/supabaseClient'
+import type { Movies } from './interfaces'
+
+const countries = ref([])
+const movies = ref<Movies[]>([])
+
+async function getCountries() {
+  const { data: moviesRef } = await supabase.from('movies').select()
+  const { data: countriesRef } = await supabase.from('countries').select()
+  countries.value = countriesRef
+  movies.value = moviesRef
+
+  console.log(movies.value)
+}
+
+onMounted(() => {
+  // Load movies into state......
+  
+  getCountries()
+})
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <!-- <HelloWorld msg="You did it!" />
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
-      </nav>
+      </nav> -->
+      <ul v-for="movie in movies">
+        <img :src="movie.image" />
+        <br />
+        <img height="50px" width="100px" :src="movie.platform[0]" />
+        <br />
+        <li :key="movie.title">{{ movie.title }}</li>
+        <li :key="movie.languages">{{ movie.languages }}</li>
+        <li :key="movie.genre">{{ movie.genre }}</li>
+        <li :key="movie.category">{{ movie.category }}</li>
+        <li :key="movie.release_year">{{ movie.release_year }}</li>
+        <li :key="movie.recommendation">{{ movie.recommendation }}</li>
+      </ul>
     </div>
   </header>
 

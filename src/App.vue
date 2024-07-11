@@ -7,6 +7,20 @@ import type { Movies } from './interfaces'
 
 const countries = ref([])
 const movies = ref<Movies[]>([])
+const items = [
+  {
+    src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
+  },
+  {
+    src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
+  },
+  {
+    src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
+  },
+  {
+    src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+  },
+]
 
 async function getCountries() {
   const { data: moviesRef } = await supabase.from('movies').select()
@@ -19,9 +33,11 @@ async function getCountries() {
 
 onMounted(() => {
   // Load movies into state......
-  
+
   getCountries()
 })
+
+
 </script>
 
 <template>
@@ -47,6 +63,11 @@ onMounted(() => {
         <li :key="movie.release_year">{{ movie.release_year }}</li>
         <li :key="movie.recommendation">{{ movie.recommendation }}</li>
       </ul>
+
+
+      <v-carousel hide-delimiters>
+        <v-carousel-item v-for="(item, i) in items" :key="i" :src="item.src" cover></v-carousel-item>
+      </v-carousel>
     </div>
   </header>
 
